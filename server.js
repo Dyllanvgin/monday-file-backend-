@@ -8,8 +8,26 @@ import cors from 'cors';
 dotenv.config();
 
 const app = express();
-app.use(cors({ origin: 'http://localhost:5173' }));
-app.use(express.json()); // ✅ Body parser for JSON
+
+// Allow localhost and your deployed frontend on Vercel to access backend
+const allowedOrigins = [
+  'http://localhost:5173', // your local frontend dev URL
+  'https://install-form-new-t9tl.vercel.app', // replace with your actual Vercel frontend URL
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin like mobile apps or curl
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = `The CORS policy for this site does not allow access from the specified Origin: ${origin}`;
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  }
+}));
+
+app.use(express.json()); // Body parser for JSON
 
 const upload = multer({ dest: 'uploads/' });
 const PORT = process.env.PORT || 4000;
@@ -19,7 +37,7 @@ if (!process.env.MONDAY_API_KEY) {
   process.exit(1);
 }
 
-// Route: /upload
+// /upload route
 app.post('/upload', upload.single('file'), (req, res) => {
   const { item_id, column_id } = req.query;
 
@@ -42,8 +60,8 @@ app.post('/upload', upload.single('file'), (req, res) => {
   `;
 
   const variables = {
-    item_id: item_id,
-    column_id: column_id,
+    item_id,
+    column_id,
     file: null,
   };
 
@@ -113,7 +131,7 @@ app.post('/upload', upload.single('file'), (req, res) => {
   });
 });
 
-// ✅ Route: /create-item
+// /create-item route
 app.post('/create-item', (req, res) => {
   const { boardId, itemName } = req.body;
 
@@ -162,7 +180,7 @@ app.post('/create-item', (req, res) => {
   request.end();
 });
 
-// ✅ Route: /create-subitem
+// /create-subitem route
 app.post('/create-subitem', (req, res) => {
   const { parentItemId, itemName } = req.body;
 
@@ -211,7 +229,7 @@ app.post('/create-subitem', (req, res) => {
   request.end();
 });
 
-// Server start
+// Start server
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
