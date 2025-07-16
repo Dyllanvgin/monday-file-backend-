@@ -12,7 +12,7 @@ const app = express();
 // Allow localhost and your deployed frontend on Vercel to access backend
 const allowedOrigins = [
   'http://localhost:5173', // your local frontend dev URL
-  'https://install-form-new-t9tl.vercel.app', // replace with your actual Vercel frontend URL
+  'https://board-drop.vercel.app', // ✅ New frontend
 ];
 
 app.use(cors({
