@@ -229,6 +229,11 @@ app.post('/create-subitem', (req, res) => {
   request.end();
 });
 
+// Health check endpoint for uptime monitoring
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
+
 // Start server
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
