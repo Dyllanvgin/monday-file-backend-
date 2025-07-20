@@ -13,6 +13,7 @@ const app = express();
 const allowedOrigins = [
   'http://localhost:5173', // your local frontend dev URL
   'https://board-drop.vercel.app', // ✅ New frontend
+  'http://192.168.10.207:5173',
 ];
 
 app.use(cors({
