@@ -232,6 +232,7 @@ app.post('/create-subitem', (req, res) => {
 
 // Health check endpoint for uptime monitoring
 app.get('/health', (req, res) => {
+  console.log(`Health check received at ${new Date().toISOString()} from IP: ${req.ip}`);
   res.status(200).send('OK');
 });
 
